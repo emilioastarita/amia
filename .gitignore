@@ -1,0 +1,13 @@
+.settings
+app.js
+lib/*.js
+tmp/*
+*.map
+bower_components/*
+node_modules/*
+config-local.json
+public/javascripts/amia.js
+public/javascripts/admin.js
+public/javascripts/amia.js.map
+public/javascripts/admin.js.map
+public/stylesheets/style.css

@@ -1,0 +1,70 @@
+extends layout
+
+block mainContent
+    script(src='/javascripts/amia.js')
+    #loading
+      .container
+        h1 Mapa AMIA
+        p Sitio informativo sobre el caso AMIA. 
+        .row
+          .six.columns
+            p
+              img(src="/images/icon-scroll.png", alt="Mouse Scroll")
+            h2 Zoom
+          .six.columns        
+            p 
+              img(src="/images/icon-singleclick.png", alt="Mouse Scroll")
+            h2 Navega
+      h1.start
+        a.js-start(href="#Comenzar") Comenzar
+      
+      
+        
+    #graph
+    #whatis ?
+    #what.popupGraph.four.columns
+      button.close.button Cerrar
+      h1 ¿Qué es este sitio?
+      .clear
+      hr
+      p 
+        strong ATENCIÓN 
+        | Este sitio está actualmente en proceso de edición, incorporación de nodos
+        | relaciones, y citas.
+      hr
+      p Es una representación gráfica mediante un programa de un conjunto 
+        | de personas, hechos, eventos y relaciones que tuvieron o tienen que ver
+        | con el atentado a la Asociación Mutual Israelita Argentina (AMIA).
+      p El caso AMIA, que hoy toma relevancia en la prensa por la muerte del 
+        | fiscal Nisman, es un caso complejo con muchísimos implicados que
+        | vuelven a aparecer una y otra vez a través de los años
+        | en diferentes instancias y situaciones de la argentina.
+      p Creemos que una representación gráfica de estos hechos e implicados
+        | puede ayudar a entender mejor la actualidad del caso Nisman y 
+        | AMIA. 
+      p La información presentada en el sitio fue tomada principalmente
+        | de la Wikipedia (en el caso de las biografías), y de diferentes medios 
+        | de prensa de la Argentina (para justificar las relaciones de los nodos).
+        | Si deseas agregar o rectificar algún nodo o relación por favor no dudes
+        | en escribirnos, citando como fuente algún medio de prensa de relevancia.
+        | En la medida de lo posible intentaremos incorporar estas correciones.
+      hr
+      p El código fuente de este sitio está disponible para su consulta y/o uso en 
+        | un repositorio git de acceso público.
+      
+    #nodeInfoTpl.popupGraph.four.columns
+      button.close.button Cerrar
+      h1.title
+      div.image
+        img(src='')
+      div.description
+    #edgeInfoTpl.popupGraph.four.columns
+      button.close.button Cerrar
+      h1.title
+      div.relation
+        span.node_from
+        span ⇾      
+        strong.title
+        span ⇾
+        span.node_to
+      div.description        

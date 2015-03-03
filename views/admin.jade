@@ -1,0 +1,51 @@
+extends admin-layout
+block mainContent
+  #admin
+    .row
+      .nodesContainer.six.columns
+        h2 Nodos
+          |(
+          span=Object.keys(info.nodes).length
+          |) 
+        p
+          a.button(href="/node-new") + Agregar nodo
+
+        table.u-full-width.nodes.list
+          thead
+            tr
+              th Nombre
+              th 
+          tbody    
+            - each node in info.nodes
+              tr
+                td
+                  a(href= "/node-edit/"+node.id)= node.name
+                td
+                  a.js-delete(href= "/node-delete/"+node.id) Borrar
+
+      .edgesContainer.six.columns
+        h2 Relaciones
+          |(
+          span=Object.keys(info.edges).length
+          |) 
+        p
+          a.button(href="/edge-new") + Agregar relación
+
+        table.u-full-width.edges.list
+          thead
+            tr
+              th Nombre
+              th 
+          tbody    
+            - each edge in info.edges
+              tr
+                td
+                  a(href= "/edge-edit/"+edge.id)= edge.name
+                    | 
+                    span.node_from= info.nodes[edge.node_from].name
+                    span ⇾     
+                    strong= edge.name     
+                    span ⇾
+                    span.node_to= info.nodes[edge.node_to].name                   
+                td
+                  a.js-delete(href= "/edge-delete/"+edge.id) Borrar

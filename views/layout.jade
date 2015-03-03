@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title AMIA
+    link(href='//fonts.googleapis.com/css?family=Raleway:400,300,600', rel='stylesheet', type='text/css')
+    link(rel='stylesheet', href='/bower_components/skeleton/css/normalize.css')
+    link(rel='stylesheet', href='/bower_components/skeleton/css/skeleton.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/bower_components/jquery/dist/jquery.min.js')
+    script(src='/bower_components/d3/d3.min.js')
+    script.
+      var AMIA = {};
+      AMIA.options = !{JSON.stringify(clientOptions)};
+  body
+    include ./_flash-block.jade
+    #container!= body
+      block mainContent

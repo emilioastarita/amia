@@ -1,0 +1,14 @@
+-if (flash_error != '')
+  .flash_error.js-flash
+    .close Cerrar
+    .message=flash_error
+-if (flash_message != '')
+  .flash_message.js-flash
+    .close Cerrar
+    .message=flash_message
+script.
+  $(function(){
+    $('.js-flash .close').click(function() {
+        $(this).closest('.js-flash').hide();
+    })
+  });

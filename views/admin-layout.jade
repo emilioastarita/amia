@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    title AMIA.ts
+    link(href='//fonts.googleapis.com/css?family=Raleway:400,300,600', rel='stylesheet', type='text/css')
+    link(rel='stylesheet', href='/bower_components/skeleton/css/normalize.css')
+    link(rel='stylesheet', href='/bower_components/skeleton/css/skeleton.css')    
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/bower_components/jquery/dist/jquery.min.js')
+    script.
+      var AMIA = {};
+      AMIA.options = !{JSON.stringify(clientOptions)};
+  body.admin
+    include ./_flash-block.jade
+    include ./_edit-scripts.jade
+    #header.container
+      .row
+        h1.eight.columns
+          a(href="/admin") Admin - AMIA
+        .loginForm.four.columns
+          - if (user)
+            span=user.email 
+            |&nbsp;| 
+            a(href="/logout") logout
+    #container.container!= body
+      block mainContent

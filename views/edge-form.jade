@@ -1,0 +1,32 @@
+form(action="/edge-save", method="post", enctype="multipart/form-data")
+  input(name="id", type="hidden", value=edge?edge.id: 'new')
+  .control
+    label(for="name") Nombre: 
+    input(name="name", type="text", value=edge?edge.name:'')
+  .control
+    label(for="type") Tipo: 
+    input(name="type", type="text", value=edge?edge.type:'')
+
+  .control
+    label(for="node_from") Desde: 
+    select.chosen-select(name="node_from")
+      - each node in nodes
+        option(value=node.id, selected=edge ? node.id == edge.node_from : false)=node.name
+
+  .control
+    label(for="node_to") Hasta: 
+    select.chosen-select(name="node_to")
+      - each node in nodes
+        option(value=node.id, selected=edge ? node.id == edge.node_to : false)=node.name
+  .control
+    label(for="date") Fecha
+    input(name="date", type="date", value=edge ?edge.dateIso : '')
+  .control
+    label(for="description") Descripción: 
+    .toolbar
+       include _toolbar-editor.jade
+    textarea.wyshtml5(name="description")=edge?edge.description:''
+  .control
+    a.button(href="/admin") Volver
+    |       
+    input.button-primary(type="submit", value="Guardar")

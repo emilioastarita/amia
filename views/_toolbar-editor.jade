@@ -1,0 +1,29 @@
+a.bold(data-wysihtml5-command='bold', title='CTRL+B') B
+a.italic(data-wysihtml5-command='italic', title='CTRL+I') I
+a(data-wysihtml5-command='createLink') link
+a(data-wysihtml5-command='removeLink')
+  s link
+a(data-wysihtml5-command='formatBlock', data-wysihtml5-command-value='h1') h1
+a(data-wysihtml5-command='formatBlock', data-wysihtml5-command-value='h2') h2
+a(data-wysihtml5-command='formatBlock', data-wysihtml5-command-blank-value='true') plaintext
+a(data-wysihtml5-command='insertUnorderedList') Ul
+a(data-wysihtml5-command='insertOrderedList') Ol
+a(data-wysihtml5-action='change_view') &lt;html /&gt;
+div(data-wysihtml5-dialog='createLink', style='display: none;')
+    label
+      | Link:
+      input(data-wysihtml5-dialog-field='href', value='http://')
+    a(data-wysihtml5-dialog-action='save') OK
+    a(data-wysihtml5-dialog-action='cancel') Cancel
+div(data-wysihtml5-dialog='insertImage', style='display: none;')
+      label
+        | Image:
+        input(data-wysihtml5-dialog-field='src', value='http://')
+      label
+        | Align:
+        select(data-wysihtml5-dialog-field='className')
+          option(value='') default
+          option(value='wysiwyg-float-left') left
+          option(value='wysiwyg-float-right') right
+      a(data-wysihtml5-dialog-action='save') OK
+        a(data-wysihtml5-dialog-action='cancel') Cancel

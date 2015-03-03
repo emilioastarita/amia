@@ -1,0 +1,19 @@
+extends layout
+block mainContent
+  form.login(action='/login', method='post')
+      - if (user)
+        div.control
+          label=user.email
+        div.control
+          a(href="/logout") logout
+        div.control
+          a(href="/admin") ADMIN
+      - else 
+        div.control
+            label email:
+            input(type='text', name='email')
+        div.control
+            label pass:
+            input(type='password', name='password')
+        div.control
+            input.btn(type='submit', value='Log In')

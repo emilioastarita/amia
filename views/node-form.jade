@@ -1,0 +1,27 @@
+form(action="/node-save", method="post", enctype="multipart/form-data")
+  input(name="id", type="hidden", value=node?node.id: 'new')
+  .control
+    label(for="name") Nombre: 
+    input(name="name", type="text", value=node?node.name:'')
+  .control
+    label(for="type") Tipo: 
+    input(name="type", type="text", value=node?node.type:'')
+  .control
+    label(for="photo") Fotografía: 
+    input(name="photo", type="file")
+  .control
+    - if (node && node.photo)
+      label Foto actual
+      p 
+        img(src='/'+clientOptions['dir-uploads']+'/' + node.photo)
+  .control
+    label(for="description") Descripción: 
+    .toolbar
+       include _toolbar-editor.jade
+    textarea.wyshtml5(name="description", rows=15, cols=50)=node?node.description:''
+  .control
+    a.button(href="/admin") Volver
+    |     
+    input.button-primary(type="submit", value="Guardar")
+
+    

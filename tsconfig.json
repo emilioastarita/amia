@@ -1,0 +1,38 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false
+    },
+    "filesGlob": [
+        "./**/*.ts",
+        "!./node_modules/**/*.ts"
+    ],
+    "files": [
+        "./app.ts",
+        "./gulpfile.ts",
+        "./lib/auth.ts",
+        "./lib/config.ts",
+        "./lib/db.ts",
+        "./lib/routes.ts",
+        "./public/javascripts/admin.ts",
+        "./public/javascripts/amia.ts",
+        "./public/javascripts/typings/d3.d.ts",
+        "./public/javascripts/typings/jquery.d.ts",
+        "./typings/async/async.d.ts",
+        "./typings/express/express-middleware.d.ts",
+        "./typings/express/express.d.ts",
+        "./typings/gm/gm.d.ts",
+        "./typings/mongodb/mongodb.d.ts",
+        "./typings/multer/multer.d.ts",
+        "./typings/mysql/mysql.d.ts",
+        "./typings/nconf/nconf.d.ts",
+        "./typings/node/node.d.ts",
+        "./typings/passport-local/passport-local.d.ts",
+        "./typings/passport-strategy/passport-strategy.d.ts",
+        "./typings/passport/passport.d.ts"
+    ]
+}

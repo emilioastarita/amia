@@ -1,0 +1,16 @@
+{
+  "_comment": "Para sobreeescribir las opciones, usar config-local.json",
+  "dir-uploads": "uploads",
+  "port": 3000,
+  "database": {
+    "host": "localhost",
+    "user": "amia",
+    "password": "amia",
+    "database": "amia",
+    "session-secret-key": "-change-This-",
+
+    "basic-auth": false,
+    "basic-auth-user": "",
+    "basic-auth-password": ""
+  }
+}
