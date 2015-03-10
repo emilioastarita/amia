@@ -40,7 +40,7 @@ block mainContent
             - each edge in info.edges
               tr
                 td
-                  a(href= "/edge-edit/"+edge.id)= edge.name
+                  a(href= "/edge-edit/"+edge.id)
                     | 
                     span.node_from= info.nodes[edge.node_from].name
                     span ⇾     
