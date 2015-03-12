@@ -22,6 +22,15 @@ $ npm install
 $ bower install
 ```
 
+### Creación de DB y usuario
+
+```sql
+create database amia;
+grant usage on *.* to amia@localhost identified by 'PASSWORD_AMIA';
+grant all privileges on amia.* to amia@localhost ;
+FLUSH PRIVILEGES;
+```
+
 ### Cargar base de datos
 
 ```sh
@@ -39,6 +48,11 @@ $ cp config-default.json config-local.json
 $ emacs config-local.json # dejar solo propiedades que se usan
 ```
 
+### Directorio de temporales de compilación
+
+```sh
+$ mkdir -p tmp
+```
 
 ### Para ejecutar en modo dev correr la default task de gulp
 
