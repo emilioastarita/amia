@@ -18,9 +18,9 @@ form(action="/edge-save", method="post", enctype="multipart/form-data")
     select.chosen-select(name="node_to")
       - each node in nodes
         option(value=node.id, selected=edge ? node.id == edge.node_to : false)=node.name
-  .control
-    label(for="date") Fecha
-    input(name="date", type="date", value=edge ?edge.dateIso : '')
+  //- .control
+  //-   label(for="date") Fecha
+    input(name="date", type="hidden", value=edge ?edge.dateIso : '')
   .control
     label(for="description") Descripción: 
     .toolbar
