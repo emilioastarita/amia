@@ -16,6 +16,14 @@ interface Node {
   day: number;
   month: number;
   year: number;
+  sources?: Source[];
+}
+
+interface Source {
+  id?: number;
+  entity: string;
+  entity_id: number;
+  link: string;
 }
 
 interface Edge {
@@ -26,6 +34,7 @@ interface Edge {
   name: string;
   date?: Date;
   description: string;
+  sources?: Source[];
 }
 
 interface User {
@@ -51,7 +60,7 @@ interface FunDbOneResult<T> {
 interface FunDbSave {
   (err: mysql.IError,
    result : {
-     insertedId? : number;
+     insertId? : number;
      affectedRows? : number;
      changedRows? : number;
   }): void;
@@ -128,6 +137,45 @@ export function getEdge(id: number, ready: FunDbOneResult<Edge>): void {
   connection.query('select *, DATE_FORMAT(`date`,"%Y-%m-%d") as dateIso from `edge` where `id` = ? ;', id, useOneResultFunc(ready));
 }
 
+
+export function getSourcesForEntity(entityName, entityId, ready: FunDb<Source[]>): void {
+  connection.query('select * FROM `source` where `entity` = ? AND `entity_id` = ?;', [entityName, entityId], ready);
+}
+
+export function saveSourcesForEntity(sources : any[], entityName : string, entityId : number, ready: FunDbSave): void {
+  debug('saveSourcesForEntity', entityName, entityId, sources);
+  connection.query('DELETE FROM `source` where `entity` = ? AND `entity_id` = ?;',
+                  [entityName, entityId],
+                  (err, result) => {
+                    if (err) {
+                      console.log('Error deleting `source` ' + err);
+                      result(err, null);
+                      return;
+                    }
+                    var q = 'insert into `source` SET ? ';
+                    var parallel = [];
+                    for (var i = 0 ; i < sources.length ; i++) {
+                      parallel.push(((source) => {
+                          var sourceDb = <Source>{};
+                          sourceDb.link = source;
+                          sourceDb.entity = entityName;
+                          sourceDb.entity_id = entityId;
+                          return fn => { connection.query(q, sourceDb, fn); }
+                      })(sources[i]))
+                    }
+                    async.parallel(parallel, (err, results)=> {
+                      if (err) {
+                        console.log('Error inserting `source` ' + err);
+                        result(err, null);
+                        return;
+                      }
+                      return ready(null, results);
+                    })
+  });
+
+}
+
+
 function compressAndResize(path: string) {
   var w = 100, h = 100;
   gm(path)
@@ -146,6 +194,7 @@ export function saveEdge(formData, ready: FunDbSave): void {
   if (formData.date !== '') {
     edge.date = formData.date;
   }
+  formData.source = formData.source || [];
 
   edge.node_from = formData.node_from;
   edge.node_to = formData.node_to;
@@ -153,11 +202,18 @@ export function saveEdge(formData, ready: FunDbSave): void {
   var q = '';
   if (formData.id === 'new') {
     q = 'insert into `edge` SET ? ';
-    connection.query(q, edge, ready);
+    connection.query(q, edge, (err, result) => {
+      if (!err) {
+        saveSourcesForEntity(formData.source, 'edge', result.insertId, (err, _) => {});
+      }
+      ready(err, result);
+    });
   } else {
     q = 'UPDATE `edge` SET ? WHERE id = ? limit 1';
     debug('UPDATE edge: ', edge);
-    connection.query(q, [edge, formData.id], ready);
+    connection.query(q, [edge, formData.id], (err, r) => {ready(err, {insertId: formData.id})});
+    saveSourcesForEntity(formData.source, 'edge', formData.id, (err, _) => {});
+
   }
 }
 
@@ -166,6 +222,7 @@ export function deleteEdge(id : number, ready: FunDbSave): void {
   var q = 'delete from `edge` WHERE id = ? limit 1';
   connection.query(q, id, ready);
 }
+
 export function deleteNode(id : number, ready: FunDbSave): void {
   debug('deleteNode', id);
   var q = 'delete from `node` WHERE id = ? limit 1';
@@ -201,7 +258,8 @@ export function saveNode(formData, photo, ready: FunDbSave): void {
   node.description = formData.description || '';
   node.day = formData.day || null;
   node.month = formData.month || null;
-  node.year = formData.year || null;    
+  node.year = formData.year || null;
+  formData.source = formData.source || [];
 
   if (photo && photo.name) {
     compressAndResize(photo.path);
@@ -210,10 +268,17 @@ export function saveNode(formData, photo, ready: FunDbSave): void {
   var q = '';
   if (formData.id === 'new') {
     q = 'insert into `node` SET ? ';
-    connection.query(q, node, ready);
+    connection.query(q, node, (err, result) => {
+      if (!err) {
+        saveSourcesForEntity(formData.source, 'node', result.insertId, (err, _) => {});
+      }
+      ready(err, result);
+    });
   } else {
     q = 'UPDATE `node` SET ? WHERE id = ? limit 1';
     debug('UPDATE node: ', node);
-    connection.query(q, [node, formData.id], ready);
+    connection.query(q, [node, formData.id], (err, r) => {ready(err, {insertId: formData.id})});
+    saveSourcesForEntity(formData.source, 'node', formData.id, (err, _) => {});
   }
+
 }

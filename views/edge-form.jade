@@ -27,6 +27,8 @@ form(action="/edge-save", method="post", enctype="multipart/form-data")
        include _toolbar-editor.jade
     textarea.wyshtml5(name="description")=edge?edge.description:''
   .control
+    include source-form.jade    
+  .control
     a.button(href="/admin") Volver
     |       
     input.button-primary(type="submit", value="Guardar")

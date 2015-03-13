@@ -3,6 +3,7 @@ declare var wysihtml5 : any;
 declare var wysihtml5ParserRules : any;
 
 $(function(){
+
     var editorElem = document.querySelector('.wyshtml5');
     if (editorElem) {
         wysihtml5.commands.clearFormat = {
@@ -33,6 +34,7 @@ $(function(){
         });
     });
 
+
     $('body').on('change', '.js-type', e => {
       var val = $(e.currentTarget).val()
       if (val === 'fact') {
@@ -41,6 +43,45 @@ $(function(){
         $('.js-fact').hide();
       }
     });
-
     $('.js-type').change();
+
+
+    $('body').on('click', '.js-remove-source', e => {
+      e.preventDefault();
+      var $row = $(e.currentTarget).closest('.js-source-template');
+      $row.remove();
+    });
+
+
+
+    $('body').on('click', '.js-add-source', e => {
+      e.preventDefault();
+      var link = $('.js-new-source').val();
+      if ($.trim(link).length == 0) {
+        return;
+      }
+
+      console.log('.js-actual-sources input[value="'+link+'"]');
+      if ($('.js-actual-sources input[value="'+link+'"]').length) {
+        alert('El link ya existe');
+        return;
+      }
+      var $row = $('.js-source-template:last').clone();
+      $row.find('input').val(link).attr('value', link);
+      if (!$row.find('input')[0].checkValidity()) {
+        alert('El link es inválido - Ej. http://www.google.com.ar');
+        return;
+      }
+      var len = $('.js-source-template').length - 1;
+      $row.find('input').attr('name', 'source['+ len + ']');
+      $('.js-actual-sources').append($row);
+      $('.js-new-source').val("http://").focus();
+    });
+
+    $('body').on('submit', 'form', e => {
+      if ($('.js-new-source').val() !== 'http://') {
+        $('.js-add-source').click();
+      }
+    });
+
 });

@@ -17,7 +17,7 @@ function setFlashMessagesOnSave(req: Request, err: mysql.IError) {
   if (err) {
     req.flash('error', 'Fail');
   } else {
-    req.flash('message', 'Ok');
+    req.flash('message', 'Result ok');
   }
 }
 
@@ -34,12 +34,12 @@ var node = {
       {name: 'Hecho', value: 'fact'},
   ],
   new(req: Request, res: Response) {
-    res.render('node-new.jade', {typeOptions: node.typeOptions});
+    res.render('node-new.jade', {typeOptions: node.typeOptions, sources: []});
   },
   save(req: Request, res: Response) {
-    db.saveNode(req.body, req.files.photo, () => {
+    db.saveNode(req.body, req.files.photo, (err, result) => {
       req.flash('message', 'Saved node');
-      res.redirect('/admin');
+      res.redirect('/node-edit/' + result.insertId);
     });
   },
   delete(req: Request, res: Response) {
@@ -50,7 +50,15 @@ var node = {
   },
   edit(req: Request, res: Response) {
     db.getNode(req.params.id, (err, n) => {
-      res.render('node-edit.jade', { node: n, typeOptions: node.typeOptions });
+      if (err) {
+        return res.send('error: ' + err);
+      }
+      db.getSourcesForEntity('node', n.id, (err, sources) => {
+        if (err) {
+          return res.send('error: ' + err);
+        }
+        res.render('node-edit.jade', { node: n, typeOptions: node.typeOptions, sources: sources});
+      });
     })
   }
 };
@@ -58,13 +66,13 @@ var node = {
 var edge = {
   new(req: Request, res: Response) {
     db.getNodes((err, nodes) => {
-      res.render('edge-new.jade', { nodes: nodes });
+      res.render('edge-new.jade', { nodes: nodes, sources: [] });
     });
   },
   save(req: Request, res: Response) {
     db.saveEdge(req.body, (err, result) => {
       setFlashMessagesOnSave(req, err);
-      res.redirect('/admin');
+      res.redirect('/edge-edit/' + result.insertId);
     });
   },
   delete(req: Request, res: Response) {
@@ -76,7 +84,13 @@ var edge = {
   edit(req: Request, res: Response) {
     db.getNodes((err, nodes) => {
       db.getEdge(req.params.id, (err, edge) => {
-        res.render('edge-edit.jade', { nodes: nodes, edge: edge });
+        db.getSourcesForEntity('edge', edge.id, (err, sources) => {
+          if (err) {
+            return res.send('error: ' + err);
+          }
+          res.render('edge-edit.jade', { nodes: nodes, edge: edge, sources: sources });
+        });
+
       });
     });
   }

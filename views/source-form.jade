@@ -1,0 +1,20 @@
+
+mixin sourceLink(val, idx)
+  .js-source-template.source-group
+    input(type="url", value=val, name="source["+idx+"]") 
+    |&nbsp;    
+    button.source.js-remove-source -
+
+
+.control
+  label Nueva fuente:
+  .source-group
+    input.js-new-source(type="text", value="http://")
+    | &nbsp;
+    button.source.js-add-source +
+
+  div.js-actual-sources
+    - each source, idx in sources
+      +sourceLink(source.link, idx)
+  .hide(style="display:none;")
+    +sourceLink('', -1)
