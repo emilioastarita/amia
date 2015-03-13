@@ -265,7 +265,6 @@ module AmiaGraph {
       .on('click', function(d) {
         if (d3.event.defaultPrevented) return; //
         var self = this;
-        console.log('click called')
         activeNode.call(self, d);
         if (d) {
           showNodeInfo(d.id);
@@ -282,7 +281,6 @@ module AmiaGraph {
     });
     var g = edge.enter().append('g').attr('class', 'edge');
     var click = function(d) {
-      console.log('click edge', d)
         if (d) {
           showEdgeInfo(d.id);
         }
