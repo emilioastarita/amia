@@ -83,13 +83,13 @@ var edge = {
 export function loadRoutes(app: express.Express) {
   app.use((req: Request, res, next) => {
     res.locals.clientOptions = {
-      'dir-uploads': nconf.get('dir-uploads')
+      'dir-uploads': nconf.get('dir-uploads'),
+      'analytics': nconf.get('analytics'),
     };
     console.log('Res locals es: ', res.locals);
     res.locals.user = req.isAuthenticated() ? req.user : null;
     res.locals.flash_error = req.flash('error');
     res.locals.flash_message = req.flash('message');
-    console.log('Res locals es: ', res.locals);
     next();
   });
 
