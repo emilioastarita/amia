@@ -133,13 +133,17 @@ module AmiaGraph {
   }
 
   function setupData(): void {
-
+    var maxRadius = 50;
+    var minRadius = 10;
+    var maxRelationsNode = 0;
+    var relationsByNode : any = {};
     Object.keys(nodes).forEach((i, num) => {
       var n = nodes[i];
       n.x = n.y = Math.floor(Math.random() * width);
       n.y = Math.floor(Math.random() * height);
-      n.width = n.height = 30;
-      n.value = n.radius = n.width / 2;
+      n.width = n.height = 50;
+      n.value = n.radius = n.width / 2 ;
+      relationsByNode[i] = 1;
     });
 
     Object.keys(edges).forEach(i => {
@@ -147,6 +151,21 @@ module AmiaGraph {
       l.source = nodes[l.node_from];
       l.target = nodes[l.node_to];
       linkedByIndex[l.node_from + "," + l.node_to] = 1;
+      relationsByNode[l.node_from]++;
+      relationsByNode[l.node_to]++;
+      if (maxRelationsNode < relationsByNode[l.node_to])
+        maxRelationsNode = relationsByNode[l.node_to];
+      if (maxRelationsNode < relationsByNode[l.node_from])
+        maxRelationsNode = relationsByNode[l.node_from];
+    });
+    Object.keys(nodes).forEach((i, num) => {
+      var n = nodes[i];
+      var newRadius = n.radius * (relationsByNode[i]  /  maxRelationsNode);
+      if (newRadius < minRadius) {
+        newRadius = minRadius;
+      }
+      n.value = n.radius = newRadius;
+      n.width = n.height = n.radius * 2;
     });
 
   }
@@ -203,13 +222,14 @@ module AmiaGraph {
       .attr("xlink:href", d => {
         return img(d);
       })
-      .attr("clip-path", "url(#clipCircle)")
+      .attr("clip-path", d => { return "url(#clipCircle-"+d.id+")"; } )
       .attr("width", d => { return d.width; })
       .attr("height", d => { return d.height; });
 
     g.append('text')
-      .attr('y', d => { return d.height + d.radius })
-      .attr('x', d => { return d.radius * -1 })
+      .attr('y', d => { return d.height + d.radius / 2 })
+      .attr('x', d => { return d.radius / 2 * -1 })
+      .attr('font-size', d => { return (d.radius * 0.3) + "px" })
       .text(d => { return d.name; })
 
       node.on("mouseover", activeNode)
@@ -281,14 +301,17 @@ module AmiaGraph {
   }
 
   function createClipRadius(vis : D3.Selection) {
-    var clipRadius = defaultWidth / 2
-    vis.append('defs')
-      .append('clipPath')
-      .attr('id', 'clipCircle')
+    var defs = vis.append('defs');
+    Object.keys(nodes).forEach((i, num) => {
+      var d = nodes[i];
+      defs.append('clipPath')
+      .attr("id", "clipCircle-"+d.id)
       .append('circle')
-      .attr('r', clipRadius)
-      .attr('cx', clipRadius)
-      .attr('cy', clipRadius)
+      .attr('r', d.radius)
+      .attr('cx', d.radius )
+      .attr('cy', d.radius )
+    })
+
   }
 
   function setupZoom(root : D3.Selection) {
@@ -303,7 +326,7 @@ module AmiaGraph {
   }
 
   function setupDragging() {
-    
+
     function dragstarted(d) {
       d3.event.sourceEvent.stopPropagation();
       force.stop();
@@ -340,6 +363,7 @@ module AmiaGraph {
     setupData();
     setupZoom(root);
     createClipRadius(vis);
+
     setupDragging();
     edgesG = root.append("g").attr("id", "links");
     nodesG = root.append("g").attr("id", "nodes");
@@ -352,6 +376,7 @@ module AmiaGraph {
     curEdgesData = filterEdges(edges, curNodesData);
     force.nodes(curNodesData);
     setupNodes();
+
     force.links(curEdgesData);
     setupEdges();
     force.start();
