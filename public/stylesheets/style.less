@@ -1,3 +1,10 @@
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 h1, h2 {
   font-weight: 100;
 }
@@ -5,31 +12,27 @@ h1 a {
   text-decoration: none;
 }
 .js-flash {
-  position: absolute;
   z-index: 1;
-  width: 30%;
-  left: 16%;
-  top: 6%;
-  background: #FFF;
+  width: 100%;
+  top: 0;
+  color: #FFF;
   text-align: center;
-  padding: 20px;
-  &.close {
+  .close {
+    padding: 0 9px 0 9px;
+    cursor: pointer;
     position: absolute;
     right: 0;
     top: 0px;
     background: #444;
-    padding: 5px;
     color: #FFF;
     cursor: pointer;
   }
 }
 .flash_error {
-  background: #d13c22;
-  color: #FFF;
+  background: rgba(209,60, 34, .4);
 }
 .flash_message {
-  background: #439a21;
-  color: #FFF;
+  background: rgba(67, 154, 33, .4);
 }
 .btn {
   padding: 6px 12px;
