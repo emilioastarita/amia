@@ -5,6 +5,11 @@ declare var wysihtml5ParserRules : any;
 $(function(){
     var editorElem = document.querySelector('.wyshtml5');
     if (editorElem) {
+        wysihtml5.commands.clearFormat = {
+          exec: function(composer, command) {
+            composer.doc.execCommand('removeFormat');
+          }
+        };
         var editor = new wysihtml5.Editor(document.querySelector('.wyshtml5'), {
             parserRules:  wysihtml5ParserRules,
             toolbar: document.querySelector('.toolbar')

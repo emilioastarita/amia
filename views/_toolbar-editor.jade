@@ -1,14 +1,16 @@
-a.bold(data-wysihtml5-command='bold', title='CTRL+B') B
-a.italic(data-wysihtml5-command='italic', title='CTRL+I') I
-a(data-wysihtml5-command='createLink') link
-a(data-wysihtml5-command='removeLink')
+a.bold(data-wysihtml5-command='bold',  title="Negrita") B
+a.italic(data-wysihtml5-command='italic',  title="Cursiva") I
+a(data-wysihtml5-command='createLink', title="Agregar enlace") link
+a(data-wysihtml5-command='removeLink', title="Quitar link")
   s link
-a(data-wysihtml5-command='formatBlock', data-wysihtml5-command-value='h1') h1
-a(data-wysihtml5-command='formatBlock', data-wysihtml5-command-value='h2') h2
-a(data-wysihtml5-command='formatBlock', data-wysihtml5-command-blank-value='true') plaintext
-a(data-wysihtml5-command='insertUnorderedList') Ul
-a(data-wysihtml5-command='insertOrderedList') Ol
-a(data-wysihtml5-action='change_view') &lt;html /&gt;
+a(data-wysihtml5-command='formatBlock', data-wysihtml5-command-value='h1', title="Título h1") h1
+a(data-wysihtml5-command='formatBlock', data-wysihtml5-command-value='h2', title="Título h2") h2
+a(data-wysihtml5-command='formatBlock', data-wysihtml5-command-blank-value='true', title="Texto plano") plaintext
+a(data-wysihtml5-command='insertUnorderedList', title="Lista desordenada") Ul
+a(data-wysihtml5-command='insertOrderedList', title="Lista ordenada") Ol
+a(data-wysihtml5-action='change_view', title="Ver código fuente") &lt;html /&gt;
+a(data-wysihtml5-command='clearFormat', title="Quitar formato - Conveniente si pegaste texto desde algún otra fuente") Quitar Formato
+
 div(data-wysihtml5-dialog='createLink', style='display: none;')
     label
       | Link:
