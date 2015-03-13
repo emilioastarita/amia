@@ -70,7 +70,7 @@ gulp.task('build', ['compile:typescript', 'build-less']);
 gulp.task('compile:typescript', function () {
     return gulp.src(paths.tscripts.src).pipe(tsc({
         module: "CommonJS",
-        sourcemap: false,
+        sourcemap: true,
         emitError: false,
         target: 'ES5',
         tmpDir: 'tmp'

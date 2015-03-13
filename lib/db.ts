@@ -89,28 +89,35 @@ export function getAll(ready: Function): void {
   async.parallel([
     this.getNodes,
     this.getEdges,
+    this.getSources
   ],
     (err, results) => {
       if (err) {
         return ready(err, null);
       }
-      ready(null, { nodes: results[0][0], edges: results[1][0] });
+      ready(null, { nodes: results[0][0], edges: results[1][0], sources: results[2][0] });
     }
     );
 };
 
 export function getAllIndexed(ready: FunDb<DbAmia>): void {
-  var newResult: any = { nodes: {}, edges: {} };
+  var newResult: any = { nodes: {}, edges: {}, sources: {nodes: [], edges: []} };
   function makeIndexer(index): Function {
-    return (e, i) => { newResult[index][e.id] = e; };
+    return (e, i) => {
+      newResult[index][e.id] = e;
+      newResult['sources'][index][e.id] = [];
+    };
   }
   this.getAll((err, result) => {
     if (err) {
       return ready(err, null);
     }
-
     result.nodes.forEach(makeIndexer('nodes'));
     result.edges.forEach(makeIndexer('edges'));
+    result.sources.forEach((source, idx) => {
+      newResult.sources[source.entity+'s'][source.entity_id].push(source.link);
+    });
+    console.log(newResult)
     ready(err, newResult);
   });
 
@@ -124,6 +131,11 @@ export function getEdges(ready: FunDb<Edge[]>): void {
   connection.query('select *, DATE_FORMAT(`date`,"%Y-%m-%d") as dateIso from `edge`;', ready);
 }
 
+export function getSources(ready: FunDb<Source[]>): void {
+  connection.query('select * FROM `source`;', ready);
+}
+
+
 
 export function getUserByEmail(mail: string, ready: FunDbOneResult<User>): void {
   connection.query('select * from `user` where `email` = ? ;', mail, useOneResultFunc(ready));
@@ -136,7 +148,6 @@ export function getNode(id: number, ready: FunDbOneResult<Node>): void {
 export function getEdge(id: number, ready: FunDbOneResult<Edge>): void {
   connection.query('select *, DATE_FORMAT(`date`,"%Y-%m-%d") as dateIso from `edge` where `id` = ? ;', id, useOneResultFunc(ready));
 }
-
 
 export function getSourcesForEntity(entityName, entityId, ready: FunDb<Source[]>): void {
   connection.query('select * FROM `source` where `entity` = ? AND `entity_id` = ?;', [entityName, entityId], ready);

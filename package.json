@@ -24,6 +24,7 @@
     "nconf": "^0.7.1",
     "passport": "^0.2.1",
     "passport-local": "^1.0.0",
+    "source-map-support": "^0.2.10",
     "typescript": "^1.4.1",
     "typescript-require": "^0.2.8"
   },

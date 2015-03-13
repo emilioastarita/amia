@@ -9,7 +9,7 @@
 /// <reference path='typings/passport/passport.d.ts' />
 /// <reference path='typings/passport-local/passport-local.d.ts' />
 /// <reference path='typings/passport-strategy/passport-strategy.d.ts' />
-
+require('source-map-support').install();
 import http = require("http")
 import url = require("url")
 import express = require("express")

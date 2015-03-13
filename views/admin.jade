@@ -17,12 +17,21 @@ block mainContent
           thead
             tr
               th Nombre
-              th 
+              th Tipo
+              th Fuentes 
+              th Eliminar                                
           tbody    
             - each node in info.nodes
               tr
                 td
                   a(href= "/node-edit/"+node.id)= node.name
+                td 
+                  - if (node.type === 'fact')
+                    span.label.fact hecho
+                  - else
+                    span.label.entity persona
+                td
+                  span.label(class=(info.sources.nodes[node.id].length === 0) ? 'warning' : '')= info.sources.nodes[node.id].length
                 td
                   a.js-delete(href= "/node-delete/"+node.id) Borrar
 
@@ -38,7 +47,8 @@ block mainContent
           thead
             tr
               th Nombre
-              th 
+              th Fuentes
+              th Eliminar
           tbody    
             - each edge in info.edges
               tr
@@ -49,6 +59,8 @@ block mainContent
                     span ⇾     
                     strong= edge.name     
                     span ⇾
-                    span.node_to= info.nodes[edge.node_to].name                   
+                    span.node_to= info.nodes[edge.node_to].name    
+                td
+                  span.label(class=(info.sources.edges[edge.id].length === 0) ? 'warning' : '')= info.sources.edges[edge.id].length                                   
                 td
                   a.js-delete(href= "/edge-delete/"+edge.id) Borrar
