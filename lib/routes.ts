@@ -29,8 +29,12 @@ function secureRoute(req: Request, res: Response, next) {
 }
 
 var node = {
+  typeOptions: [
+      {name: 'Persona/Organización', value: 'entity'},
+      {name: 'Hecho', value: 'fact'},
+  ],
   new(req: Request, res: Response) {
-    res.render('node-new.jade');
+    res.render('node-new.jade', {typeOptions: node.typeOptions});
   },
   save(req: Request, res: Response) {
     db.saveNode(req.body, req.files.photo, () => {
@@ -46,7 +50,7 @@ var node = {
   },
   edit(req: Request, res: Response) {
     db.getNode(req.params.id, (err, n) => {
-      res.render('node-edit.jade', { node: n });
+      res.render('node-edit.jade', { node: n, typeOptions: node.typeOptions });
     })
   }
 };
