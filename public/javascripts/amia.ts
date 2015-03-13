@@ -21,6 +21,9 @@ module AmiaGraph {
     description: string;
     width: number;
     height: number;
+    year : number;
+    month : number;
+    day : number;
   }
 
 
@@ -76,7 +79,16 @@ module AmiaGraph {
     });
 
   }
-
+  function makeNodeDate(node : Node) : string {
+    var fields = [];
+    if (node.day)
+      fields.push(node.day);
+    if (node.month)
+      fields.push(node.month);
+    if (node.year)
+      fields.push(node.year);
+    return fields.join('/');
+  }
   function showNodeInfo(nodeId) {
     hidePopup();
     var node = nodes[nodeId];
@@ -84,7 +96,8 @@ module AmiaGraph {
     $nodeClone.attr('id', '');
     $nodeClone.addClass('js-remove-after');
     $nodeClone.appendTo('body');
-    $nodeClone.find('h1').html(node.name);
+    $nodeClone.find('h1 .title').html(node.name);
+    $nodeClone.find('h1 .date').html(makeNodeDate(node));
     $nodeClone.find('.image img').attr('src', img(node));
     $nodeClone.find('.description').html(node.description);
     openPopup($nodeClone);
