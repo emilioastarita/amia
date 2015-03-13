@@ -3,6 +3,8 @@
 Gestor de nodos y relaciones para generar un gráfico de los hechos e implicados
 en el caso AMIA/Nisman.
 
+El aplicativo estará público proximamente en: http://amia.elloropolitico.com
+
 ## Instalación para devs
 
 Para instalar localmente el aplicativo necesitas:
