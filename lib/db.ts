@@ -13,6 +13,9 @@ interface Node {
   type: string;
   description: string;
   photo?: string;
+  day: number;
+  month: number;
+  year: number;
 }
 
 interface Edge {
@@ -196,6 +199,9 @@ export function saveNode(formData, photo, ready: FunDbSave): void {
   node.name = formData.name || 'XXXX';
   node.type = formData.type || 'generico';
   node.description = formData.description || '';
+  node.day = formData.day || null;
+  node.month = formData.month || null;
+  node.year = formData.year || null;    
 
   if (photo && photo.name) {
     compressAndResize(photo.path);

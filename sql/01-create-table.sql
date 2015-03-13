@@ -31,3 +31,5 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+ALTER TABLE `node` ADD `day` TINYINT NULL AFTER `description`, ADD `month` TINYINT NULL AFTER `day`, ADD `year` SMALLINT NULL AFTER `month`;

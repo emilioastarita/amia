@@ -26,5 +26,16 @@ $(function(){
           }
           location.reload();
         });
-    })
+    });
+
+    $('body').on('change', '.js-type', e => {
+      var val = $(e.currentTarget).val()
+      if (val === 'fact') {
+        $('.js-fact').show();
+      } else {
+        $('.js-fact').hide();
+      }
+    });
+
+    $('.js-type').change();
 });
