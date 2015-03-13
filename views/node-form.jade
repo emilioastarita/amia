@@ -4,7 +4,7 @@ form(action="/node-save", method="post", enctype="multipart/form-data")
     label(for="name") Nombre: 
     input(name="name", type="text", value=node?node.name:'')
   .control
-    label(for="type") Tipo: #{typeOptions}
+    label(for="type") Tipo:
     select.js-type(name="type", type="text", value=node?node.type:'')
       -each t in typeOptions
         -var select=null; if (node && t.value == node.type) select='selected';
