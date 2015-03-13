@@ -26,7 +26,7 @@ module AmiaGraph {
     day : number;
   }
 
-
+  var sources = null;
   var isDragging = false;
   var nodes: { [index: number]: Node; };
   var edges: { [index: number]: Edge; };
@@ -89,6 +89,18 @@ module AmiaGraph {
       fields.push(node.year);
     return fields.join('/');
   }
+  function makeSources(sources : string[]) : string {
+    if (sources.length === 0) {
+      return '<p>Aún no hay fuentes citadas.</p>'
+    }
+    var str = '';
+    str += '<ul>';
+    str += sources.map((source) => {
+      return '<li><a title="Visitar fuente" target="_blank" href="'+source+'">'+source+'</a></li>';
+    }).join('');
+    str += '</ul>';
+    return str;
+  }
   function showNodeInfo(nodeId) {
     hidePopup();
     var node = nodes[nodeId];
@@ -98,6 +110,7 @@ module AmiaGraph {
     $nodeClone.appendTo('body');
     $nodeClone.find('h1 .title').html(node.name);
     $nodeClone.find('h1 .date').html(makeNodeDate(node));
+    $nodeClone.find('.sources').html(makeSources(sources.nodes[nodeId]));
     $nodeClone.find('.image img').attr('src', img(node));
     $nodeClone.find('.description').html(node.description);
     openPopup($nodeClone);
@@ -129,6 +142,7 @@ module AmiaGraph {
     $edgeClone.find('.node_from').html(from.name);
     $edgeClone.find('.node_to').html(to.name);
     $edgeClone.find('.description').html(edge.description);
+    $edgeClone.find('.sources').html(makeSources(sources.edges[edgeId]));
     $edgeClone.appendTo('body');
     openPopup($edgeClone);
   }
@@ -139,6 +153,7 @@ module AmiaGraph {
 
   function start(): void {
     $.ajax('json-data', { dataType: 'json' }).done(data => {
+      sources = data.sources;
       nodes = data.nodes;
       edges = data.edges;
       startWidthData();
