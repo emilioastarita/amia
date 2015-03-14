@@ -121,10 +121,13 @@ module AmiaGraph {
       }
     });
     $('body').on('input', '.js-search', (e) => {
-      var term = $(e.currentTarget).val();
+      var term = $.trim($(e.currentTarget).val());
       var terms = term.toLowerCase().split(" ");
       var results = '';
-
+      if (term.length === 0) {
+        $results.hide('fast');
+        return;
+      }
       Object.keys(nodes).forEach((i, num) => {
         var n = nodes[i];
         if (isMatch(terms, n.name)) {
@@ -138,7 +141,7 @@ module AmiaGraph {
           results += '<div class="r">' + makeEdgeResult(l) + '</div>';
         }
       });
-      $results.html(results);
+      $results.html(results).show('fast');
     });
   }
   function cleanHash() {

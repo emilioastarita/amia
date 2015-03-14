@@ -105,7 +105,7 @@ $(function(){
         var $e = $(e.currentTarget);
         var type = $e.data('type');
         var table = $tables[type][0];
-        var term = $e.val();
+        var term = $.trim($e.val());
         $tables[type].find('span.highlight').removeClass('highlight');
       	var terms = term.toLowerCase().split(" ");
       	for (var r = 1; r < table.rows.length; r++) {
