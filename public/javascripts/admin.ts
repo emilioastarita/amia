@@ -84,4 +84,46 @@ $(function(){
       }
     });
 
+    ( () => {
+      var $tables = {
+        node: $('table.node-table'),
+        edge: $('table.edge-table'),
+      };
+      function highlight(term, container) {
+        $(container).find('td a').each((idx, e) => {
+          var $e = $(e);
+          if (!$e.data('original')) {
+            $e.data('original', $e.html());
+          }
+          var escapedTerm = term.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+          var html = $e.data('original').replace(new RegExp("("+escapedTerm+")", "ig"), "<span class='highlight'>$1</span>")
+          $e.html(html);
+        });
+      }
+
+      $('body').on('input', 'input.js-search-table', e => {
+        var $e = $(e.currentTarget);
+        var type = $e.data('type');
+        var table = $tables[type][0];
+        var term = $e.val();
+        $tables[type].find('span.highlight').removeClass('highlight');
+      	var terms = term.toLowerCase().split(" ");
+      	for (var r = 1; r < table.rows.length; r++) {
+      		var display = '';
+      		for (var i = 0; i < terms.length; i++) {
+      			if (table.rows[r].getAttribute('data-search').replace(/<[^>]+>/g, "").toLowerCase()
+      				.indexOf(terms[i]) < 0) {
+      				display = 'none';
+      			} else {
+      				if (terms[i].length)
+                highlight(terms[i], table.rows[r]);
+      			}
+      			table.rows[r].style.display = display;
+      		}
+      	}
+      });
+    })()
+
+
+
 });

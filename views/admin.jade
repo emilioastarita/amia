@@ -1,4 +1,5 @@
 extends admin-layout
+include admin-search.jade
 block mainContent
   #admin
     p 
@@ -13,16 +14,17 @@ block mainContent
         p
           a.button(href="/node-new") + Agregar nodo
 
-        table.u-full-width.nodes.list
+        table.u-full-width.nodes.list.node-table
           thead
             tr
-              th Nombre
+              th 
+                +searchForm('node')
               th Tipo
               th Fuentes 
               th Eliminar                                
           tbody    
             - each node in info.nodes
-              tr
+              tr(data-search=node.name)
                 td
                   a(href= "/node-edit/"+node.id)= node.name
                 td 
@@ -43,15 +45,16 @@ block mainContent
         p
           a.button(href="/edge-new") + Agregar relación
 
-        table.u-full-width.edges.list
+        table.u-full-width.edges.list.edge-table
           thead
             tr
-              th Nombre
+              th
+                +searchForm('edge')              
               th Fuentes
               th Eliminar
           tbody    
             - each edge in info.edges
-              tr
+              tr(data-search=[info.nodes[edge.node_from].name, edge.name, info.nodes[edge.node_to].name].join(" "))
                 td
                   a(href= "/edge-edit/"+edge.id)
                     | 
