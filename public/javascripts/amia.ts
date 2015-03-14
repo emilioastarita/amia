@@ -55,10 +55,11 @@ module AmiaGraph {
   var $node: JQuery;
   var $edge: JQuery;
   var $what: JQuery;
-
+  var route = '/';
   var drag;
 
-  function init() {
+  function init(initRoute) {
+    route = initRoute;
     width = $(selector).width();
     height = $(selector).height();
     curEdgesData = [];
@@ -104,6 +105,7 @@ module AmiaGraph {
   function showNodeInfo(nodeId) {
     hidePopup();
     var node = nodes[nodeId];
+    if (!node) { location.hash = '/'; return; }
     var $nodeClone = $node.clone();
     $nodeClone.attr('id', '');
     $nodeClone.addClass('js-remove-after');
@@ -114,6 +116,7 @@ module AmiaGraph {
     $nodeClone.find('.image img').attr('src', img(node));
     $nodeClone.find('.description').html(node.description);
     openPopup($nodeClone);
+    window.location.hash = '/node/' + nodeId;
   }
 
   function openPopup($e: JQuery) {
@@ -134,6 +137,7 @@ module AmiaGraph {
   function showEdgeInfo(edgeId) {
     hidePopup();
     var edge = edges[edgeId];
+    if (!edge) { location.hash = '/'; return; }
     var from = nodes[edge.node_from];
     var to = nodes[edge.node_to];
     var $edgeClone = $edge.clone();
@@ -145,18 +149,29 @@ module AmiaGraph {
     $edgeClone.find('.sources').html(makeSources(sources.edges[edgeId]));
     $edgeClone.appendTo('body');
     openPopup($edgeClone);
+    window.location.hash = '/edge/' + edgeId;
   }
 
   function img(node): string {
     return '/' + AMIA.options['dir-uploads'] + '/' + node.photo;
   }
-
+  function doRoute() {
+    var matched = null;
+    if (matched = route.match("/node/([0-9]+)")) {
+      showNodeInfo(matched[1]);
+    } else if(matched = route.match("/edge/([0-9]+)")) {
+      showEdgeInfo(matched[1]);
+    } else {
+      location.hash = '/';
+    }
+  }
   function start(): void {
     $.ajax('json-data', { dataType: 'json' }).done(data => {
       sources = data.sources;
       nodes = data.nodes;
       edges = data.edges;
       startWidthData();
+      doRoute();
     });
   }
 
@@ -411,7 +426,7 @@ module AmiaGraph {
   }
 
   $(function() {
-    init();
+    init(location.hash.slice(1) || '/');
     start();
   });
 };
