@@ -102,9 +102,19 @@ module AmiaGraph {
       ret +=   '</div>';
       return ret;
     };
-
+    var removeAccents = function(str){
+          return str
+             .replace(/[áàãâä]/gi,"a")
+             .replace(/[éè¨ê]/gi,"e")
+             .replace(/[íìïî]/gi,"i")
+             .replace(/[óòöôõ]/gi,"o")
+             .replace(/[úùüû]/gi, "u")
+             .replace(/[ç]/gi, "c")
+             .replace(/[ñ]/gi, "n")
+             .replace(/[^a-zA-Z0-9]/g," ");
+    };
     var isMatch = (terms, phrase) => {
-      var lowerPhrase = phrase.toLowerCase();
+      var lowerPhrase = removeAccents(phrase.toLowerCase());
       for (var i = 0; i < terms.length; i++) {
         if (lowerPhrase.indexOf(terms[i]) !== -1) {
           return true;
@@ -122,7 +132,7 @@ module AmiaGraph {
     });
     $('body').on('input', '.js-search', (e) => {
       var term = $.trim($(e.currentTarget).val());
-      var terms = term.toLowerCase().split(" ");
+      var terms = term.toLowerCase().split(" ").map(removeAccents);
       var results = '';
       if (term.length === 0) {
         $results.hide('fast');
