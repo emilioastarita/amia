@@ -5,7 +5,8 @@ var gulp   = require('gulp');
 var tsc    = require('gulp-tsc');
 var shell  = require('gulp-shell');
 var runseq = require('run-sequence');
-var server = require('gulp-express');
+
+var spawn = require('child_process').spawn
 var less = require('gulp-less');
 
 var paths = {
@@ -25,19 +26,47 @@ function getArg(key) : any {
   return (index < 0) ? null : (!next || next[0] === "-") ? '' : next;
 }
 
+var server = null;
+
+function runNode(restartOnError) {
+  console.log('Called runNode');
+  if (server) {
+    server.kill('SIGKILL');
+    server = null;
+  }
+  server = spawn('node', ['app.js']);;
+  server.stdout.setEncoding('utf8');
+  server.stderr.setEncoding('utf8');
+  server.stdout.on('data',function (data) {
+            console.log(data.trim());
+  });
+  server.stderr.on('error',function (data) {
+            console.error(data.trim());
+  });
+
+  server.on('close', function (code) {
+    console.log('Close server - ' + code);
+    console.log('restartOnError', restartOnError);
+    if (code && restartOnError) {
+      runNode(restartOnError);
+    }
+  });
+}
 
 gulp.task('default', ['buildrun']);
 
 
 gulp.task('server-restart', function () {
-    server.run(['app.js']);
+  runNode(true);
 });
 gulp.task('compile-restart', function (cb) {
     runseq('compile:typescript', 'server-restart', cb );
 });
 
+
+
 gulp.task('server', function () {
-    server.run(['app.js']);
+    runNode(true);
     gulp.watch('public/javascripts/*.ts', ['compile:typescript']);
     gulp.watch('public/stylesheets/*.less', ['build-less']);
     gulp.watch(['*.ts', 'lib/*.ts', 'routes/*.ts'],  ['compile-restart']);
