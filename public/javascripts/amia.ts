@@ -10,6 +10,8 @@ module AmiaGraph {
     description: string;
     node_from: number;
     node_to: number;
+    source: Node;
+    target: Node;
   }
   interface Node extends D3.Layout.GraphNodeForce {
     id: number;
@@ -55,6 +57,7 @@ module AmiaGraph {
   var $node: JQuery;
   var $edge: JQuery;
   var $what: JQuery;
+  var $results : JQuery;
   var route = '/';
   var drag;
 
@@ -66,7 +69,7 @@ module AmiaGraph {
     curNodesData = [];
     linkedByIndex = {};
     force = d3.layout.force();
-
+    $results = $('.js-result-list');
     $node = $('#nodeInfoTpl');
     $edge = $('#edgeInfoTpl');
     $('.js-start').on('click', e => {
@@ -79,8 +82,65 @@ module AmiaGraph {
       openPopup($('#what'));
     });
 
+    setupSearch();
   }
+  function setupSearch() {
+    var makeNodeResult = (node : Node) => {
+      var ret = '<div class="result" data-type="node" data-id="'+node.id+'">';
+      ret += '<span class="node_from">' + '<img src="'+ img(node) + '" />' + '</span>';
+      ret +=  node.name
+      ret += ' ' + makeNodeDate(node);
+      ret += '</div>'
+      return ret;
+    };
 
+    var makeEdgeResult = (edge : Edge) => {
+      var ret = '<div class="result" data-type="edge" data-id="'+edge.id+'">';
+      ret +=  '<span class="node_from">' + '<img src="'+ img(edge.source) + '" />' + '</span> ⇾ ';
+      ret +=  edge.name;
+      ret +=  ' ⇾ <span class="node_to">' + '<img src="'+ img(edge.target) + '" />' + '</span>';
+      ret +=   '</div>';
+      return ret;
+    };
+
+    var isMatch = (terms, phrase) => {
+      var lowerPhrase = phrase.toLowerCase();
+      for (var i = 0; i < terms.length; i++) {
+        if (lowerPhrase.indexOf(terms[i]) > 0) {
+          return true;
+        }
+      }
+      return false;
+    };
+    $('body').on('click', '.js-result-list .result', (e) => {
+      var r = $(e.currentTarget)
+      if (r.data('type') === 'node') {
+        showNodeInfo(r.data('id'))
+      } else {
+        showEdgeInfo(r.data('id'))
+      }
+    });
+    $('body').on('input', '.js-search', (e) => {
+      var term = $(e.currentTarget).val();
+      var terms = term.toLowerCase().split(" ");
+      var results = '';
+
+      Object.keys(nodes).forEach((i, num) => {
+        var n = nodes[i];
+        if (isMatch(terms, n.name)) {
+          results += '<div class="r">'+makeNodeResult(n) + '</div>';
+        }
+      });
+
+      Object.keys(edges).forEach(i => {
+        var l = edges[i];
+        if (isMatch(terms, l.name) || isMatch(terms, l.source.name) || isMatch(terms, l.target.name)) {
+          results += '<div class="r">' + makeEdgeResult(l) + '</div>';
+        }
+      });
+      $results.html(results);
+    });
+  }
   function cleanHash() {
     var scrollV, scrollH,
     loc = window.location;
@@ -101,6 +161,7 @@ module AmiaGraph {
       fields.push(node.year);
     return fields.join('/');
   }
+
   function makeSources(sources : string[]) : string {
     if (sources.length === 0) {
       return '<p>Aún no hay fuentes citadas.</p>'
