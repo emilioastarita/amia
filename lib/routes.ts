@@ -104,7 +104,7 @@ export function loadRoutes(app: express.Express) {
       'dir-uploads': nconf.get('dir-uploads'),
       'analytics': nconf.get('analytics'),
     };
-    console.log('Res locals es: ', res.locals);
+
     res.locals.user = req.isAuthenticated() ? req.user : null;
     res.locals.flash_error = req.flash('error');
     res.locals.flash_message = req.flash('message');
