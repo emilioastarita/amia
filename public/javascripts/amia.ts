@@ -127,6 +127,7 @@ module AmiaGraph {
   }
 
   function hidePopup() {
+    location.hash = '/';
     $('.popupGraph').removeClass('active');
     var $e = $('.popupGraph.js-remove-after');
     if ($e.length) {
