@@ -80,6 +80,15 @@ module AmiaGraph {
     });
 
   }
+
+  function cleanHash() {
+    var loc = window.location.href,
+        index = loc.indexOf('#');
+    if (index > 0) {
+      window.location.href = loc.substring(0, index);
+    }
+  }
+
   function makeNodeDate(node : Node) : string {
     var fields = [];
     if (node.day)
@@ -105,7 +114,7 @@ module AmiaGraph {
   function showNodeInfo(nodeId) {
     hidePopup();
     var node = nodes[nodeId];
-    if (!node) { location.hash = '/'; return; }
+    if (!node) { cleanHash(); return; }
     var $nodeClone = $node.clone();
     $nodeClone.attr('id', '');
     $nodeClone.addClass('js-remove-after');
@@ -127,7 +136,7 @@ module AmiaGraph {
   }
 
   function hidePopup() {
-    location.hash = '/';
+    cleanHash();
     $('.popupGraph').removeClass('active');
     var $e = $('.popupGraph.js-remove-after');
     if ($e.length) {
@@ -138,7 +147,7 @@ module AmiaGraph {
   function showEdgeInfo(edgeId) {
     hidePopup();
     var edge = edges[edgeId];
-    if (!edge) { location.hash = '/'; return; }
+    if (!edge) { cleanHash(); return; }
     var from = nodes[edge.node_from];
     var to = nodes[edge.node_to];
     var $edgeClone = $edge.clone();
@@ -163,7 +172,7 @@ module AmiaGraph {
     } else if(matched = route.match("/edge/([0-9]+)")) {
       showEdgeInfo(matched[1]);
     } else {
-      location.hash = '/';
+      cleanHash();
     }
   }
   function start(): void {
