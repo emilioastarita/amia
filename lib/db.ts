@@ -117,7 +117,6 @@ export function getAllIndexed(ready: FunDb<DbAmia>): void {
     result.sources.forEach((source, idx) => {
       newResult.sources[source.entity+'s'][source.entity_id].push(source.link);
     });
-    console.log(newResult)
     ready(err, newResult);
   });
 

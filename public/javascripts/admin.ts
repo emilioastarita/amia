@@ -25,7 +25,6 @@ $(function(){
         }
         var url = $(e.currentTarget).attr('href');
         $.post(url, data => {
-          console.log(data);
           if (data.err) {
             alert('Ocurrió un error al eliminar: ' + JSON.stringify(data.err))
             return;
