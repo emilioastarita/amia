@@ -106,7 +106,7 @@ module AmiaGraph {
     var isMatch = (terms, phrase) => {
       var lowerPhrase = phrase.toLowerCase();
       for (var i = 0; i < terms.length; i++) {
-        if (lowerPhrase.indexOf(terms[i]) > 0) {
+        if (lowerPhrase.indexOf(terms[i]) !== -1) {
           return true;
         }
       }
