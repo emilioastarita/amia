@@ -82,11 +82,13 @@ module AmiaGraph {
   }
 
   function cleanHash() {
-    var loc = window.location.href,
-        index = loc.indexOf('#');
-    if (index > 0) {
-      window.location.href = loc.substring(0, index);
+    var scrollV, scrollH,
+    loc = window.location;
+    if ("pushState" in history) {
+      history.pushState("", document.title, loc.pathname + loc.search);
+      return;
     }
+    loc.hash = "";
   }
 
   function makeNodeDate(node : Node) : string {
