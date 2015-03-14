@@ -156,7 +156,6 @@ export function loadRoutes(app: express.Express) {
     res.clearCookie('connect.sid');
     req.session.destroy(err => {
       req.session = null //
-      console.log('Is authenticated???', err, req.isAuthenticated());
       res.clearCookie('connect.sid');
       res.redirect('/');
     });
