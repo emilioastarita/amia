@@ -263,12 +263,16 @@ export function deleteEdge(id : number, ready: FunDbSave): void {
   debug('deleteEdge', id);
   var q = 'delete from `edge` WHERE id = ? limit 1';
   connection.query(q, id, cleanGetAllIndexedCallback(ready));
+  var q = 'delete from `source` WHERE entity = "edge" AND entity_id = ?';
+  connection.query(q, id, (err, _) => {});
 }
 
 export function deleteNode(id : number, ready: FunDbSave): void {
   debug('deleteNode', id);
   var q = 'delete from `node` WHERE id = ? limit 1';
   connection.query(q, id, cleanGetAllIndexedCallback(ready));
+  var q = 'delete from `source` WHERE entity = "node" AND entity_id = ?';
+  connection.query(q, id, (err, _) => {});
 }
 
 // utility functio to create a new user without registration.
