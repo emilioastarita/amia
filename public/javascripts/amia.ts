@@ -88,6 +88,9 @@ module AmiaGraph {
     $('.js-start').on('click', e => {
       e.preventDefault();
       $('#loading').addClass('remove');
+      setTimeout(_ => {
+        doRoute();
+      }, 1500);
     });
     $('body').on('click', '.popupGraph .close',hidePopup);
     $('#whatis').on('click', _ => {
@@ -333,7 +336,6 @@ module AmiaGraph {
       nodes = data.nodes;
       edges = data.edges;
       startWidthData();
-      doRoute();
     });
   }
 
