@@ -36,7 +36,10 @@ module AmiaGraph {
   var nodesG: D3.Selection;
   var edge: D3.UpdateSelection;
   var node: D3.UpdateSelection;
-
+  var zoomBehavior : D3.Behavior.Zoom;
+  var zoomed : (data: any , index?: number) => any ;
+  var scaleX : D3.Scale.LinearScale;
+  var scaleY : D3.Scale.LinearScale;
   var selector: string = '#graph';
 
   var width: number;
@@ -73,6 +76,8 @@ module AmiaGraph {
     route = initRoute;
     width = $(selector).width();
     height = $(selector).height();
+    scaleX = d3.scale.linear().domain([-width / 2, width / 2]).range([width, 0]);
+    scaleY = d3.scale.linear().domain([-height / 2, height / 2]).range([height, 0]);
     curEdgesData = [];
     curNodesData = [];
     linkedByIndex = {};
@@ -203,9 +208,39 @@ module AmiaGraph {
     str += '</ul>';
     return str;
   }
+
+  function zoomGoTo(x, y, finalScale) {
+    var actualScale = zoomBehavior.scale();
+    var zX=  zoomBehavior.translate()[0];
+    var zY = zoomBehavior.translate()[1];
+    var newX = (width  / 2   - x   ) * finalScale  - width;
+    var newY = (height / 2   - y   ) * finalScale  - height;
+    d3.transition().duration(1500).tween("zoom", function(t) {
+          var iX =  d3.interpolate(zX, newX);
+          var iY =  d3.interpolate(zY, newY);
+          var middlePoint = -9;
+          var iZOut =  d3.interpolate(actualScale, middlePoint);
+          var iZIn =  d3.interpolate(middlePoint, finalScale);
+          var iZ =  d3.interpolate(actualScale, finalScale);
+          //var iZ = (t) => {if (t < 0.5) return iZOut(t); else return iZIn(t); };
+          return function(t) {
+            zoomBehavior
+              .scale(iZ(t))
+              .translate([iX(t), iY(t)])
+              .event(d3.select('#graph'));
+            forceTick();
+          };
+        });
+  }
+
   function showNodeInfo(nodeId : number) {
     hidePopup();
     var node = nodes[nodeId];
+    console.log('showNodeInfo', node.x, node.y);
+    zoomGoTo(node.x, node.y, 3);
+
+
+
     if (!node) { cleanHash(); return; }
     var $nodeClone = $node.clone();
     $nodeClone.attr('id', '');
@@ -240,6 +275,7 @@ module AmiaGraph {
 
   function openPopup($e: JQuery) {
     setTimeout(_ => {
+      $results.hide('slow');
       $e.addClass('active');
       $e.css('max-height', $(selector).height() - 125);
     }, 0)
@@ -261,6 +297,7 @@ module AmiaGraph {
     var from = nodes[edge.node_from];
     var to = nodes[edge.node_to];
     var $edgeClone = $edge.clone();
+    zoomGoTo((from.x + to.x ) / 2, (from.y + to.y ) / 2, 3);
     $edgeClone.addClass('js-remove-after');
     $edgeClone.find('.title').html(edge.name);
     $edgeClone.find('.middle').data('id', edge.id);
@@ -301,7 +338,7 @@ module AmiaGraph {
   }
 
   function setupData(): void {
-    var maxRadius = 50;
+    var maxRadius = 90;
     var minRadius = 10;
     var maxRelationsNode = 0;
     var relationsByNode : any = {};
@@ -309,7 +346,7 @@ module AmiaGraph {
       var n = nodes[i];
       n.x = n.y = Math.floor(Math.random() * width);
       n.y = Math.floor(Math.random() * height);
-      n.width = n.height = 50;
+      n.width = n.height = maxRadius;
       n.value = n.radius = n.width / 2 ;
       relationsByNode[i] = 1;
     });
@@ -328,7 +365,7 @@ module AmiaGraph {
     });
     Object.keys(nodes).forEach((i, num) => {
       var n = nodes[i];
-      var newRadius = n.radius * (relationsByNode[i]  /  maxRelationsNode);
+      var newRadius = n.radius * (relationsByNode[i] / maxRelationsNode);
       if (newRadius < minRadius) {
         newRadius = minRadius;
       }
@@ -481,14 +518,17 @@ module AmiaGraph {
   }
 
   function setupZoom(root : D3.Selection) {
-    d3.select('#graph').call(d3.behavior.zoom()
-      .scaleExtent([.1, 50])
-      .on("zoom", () => {
-        root.attr("transform",
-          "translate(" + d3.event.translate + ")"
-          + " scale(" + d3.event.scale + ")");
+    zoomed = (data: any , index?: number) : any => {
+      console.log('translate', d3.event.translate, 'scale', d3.event.scale)
+      root.attr("transform",
+        "translate(" + d3.event.translate + ")"
+        + " scale(" + d3.event.scale + ")");
 
-      }));
+    };
+    zoomBehavior = d3.behavior.zoom()
+      .scaleExtent([.1, 50])
+      .on("zoom", zoomed);
+    d3.select('#graph').call(zoomBehavior);
   }
 
   function setupDragging() {
