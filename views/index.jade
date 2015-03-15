@@ -26,9 +26,9 @@ block mainContent
           
     #graph
     #whatis ?
-    #what.popupGraph.four.columns
+    #what.popupGraph
       button.close.button Cerrar
-      h1 ¿Qué es este sitio?
+      h2 ¿Qué es este sitio?
       .clear
       hr
       p 
@@ -60,9 +60,9 @@ block mainContent
         a(href="https://github.com/emilioastarita/amia") repositorio git de acceso público
         |.
       
-    #nodeInfoTpl.popupGraph.four.columns
+    #nodeInfoTpl.popupGraph
       button.close.button Cerrar
-      h1
+      h2
         span.title
         |&nbsp;
         span.date
@@ -82,11 +82,11 @@ block mainContent
           span.node_to.js-link(data-type="node")
             img
             span.name      
-      h3.sourcesTitle Fuentes:
+      h5.sourcesTitle Fuentes:
       div.sources
-    #edgeInfoTpl.popupGraph.four.columns
+    #edgeInfoTpl.popupGraph
       button.close.button Cerrar
-      h1.title
+      h2.title
       div.relation
         span.node_from.js-link(data-type="node")
           img

@@ -211,8 +211,8 @@ module AmiaGraph {
     $nodeClone.attr('id', '');
     $nodeClone.addClass('js-remove-after');
     $nodeClone.appendTo('body');
-    $nodeClone.find('h1 .title').html(node.name);
-    $nodeClone.find('h1 .date').html(makeNodeDate(node));
+    $nodeClone.find('h2 .title').html(node.name);
+    $nodeClone.find('h2 .date').html(makeNodeDate(node));
     $nodeClone.find('.sources').html(makeSources(sources.nodes[nodeId]));
     $nodeClone.find('.image img').attr('src', img(node));
     $nodeClone.find('.description').html(node.description);

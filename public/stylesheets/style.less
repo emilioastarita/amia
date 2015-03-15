@@ -1,3 +1,6 @@
+@primary-color: #0FA0CE;
+@secondary-color: #AF0063;
+
 html {
   box-sizing: border-box;
 }
@@ -93,20 +96,34 @@ h1 a {
   overflow: hidden;
 }
 .popupGraph {
-  h1 {
-    font-size: 2em;
+  @media only screen and (min-width: 1200px) {
+      width: 30%;
+  }
+
+  @media only screen and (max-width: 1199px) {
+      width: 45%;
+  }
+
+  @media only screen and (max-width: 1198px) and (orientation: portrait) {
+      width: 85%;
+  }
+
+
+  h2 {
     .date {
       font-size: 70%;
+      color: @secondary-color;
     }
   }
   .sourcesTitle {
     margin-top: 20px;
     margin-bottom: 4px;
-    font-size: 1em;
   }
-  .sources {
-    font-size: .9em;
+  h5 {
+    margin-top: 20px;
+    margin-botton: 7px;
   }
+  z-index: 5;
   position: absolute;
   top: 2%;
   left: -900px;
@@ -159,7 +176,6 @@ h1 a {
 
   }
   .relation {
-    font-size: .9em;
     clear: both;
     height: 110px;
     border: 1px solid #ddd;
@@ -200,7 +216,7 @@ h1 a {
   top: 0;
   line-height: normal;
   font-size: 5.5em;
-  color: #0FA0CE;
+  color: @primary-color;
   cursor: pointer;
 }
 #loading {
@@ -212,7 +228,7 @@ h1 a {
   bottom: 0;
   background: rgba(0, 0, 0, 0.7);
   color: #FFF;
-  z-index: 5;
+  z-index: 6;
   text-align: center;
   &.remove {
     transition: all 2s ease-in-out;
@@ -239,7 +255,7 @@ h1 a {
   }
   &.node-active circle {
     opacity: 1;
-    fill: #0FA0CE;
+    fill: @primary-color;
   }
 }
 
@@ -257,7 +273,7 @@ h1 a {
   }
   &.edge-active, &:hover {
     line {
-      stroke: #0FA0CE;
+      stroke: @primary-color;
       stroke-opacity: .9;
       stroke-width: 1px;
     }
