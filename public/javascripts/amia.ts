@@ -60,6 +60,14 @@ module AmiaGraph {
   var $results : JQuery;
   var route = '/';
   var drag;
+  var entityMap = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': '&quot;',
+      "'": '&#39;',
+      "/": '&#x2F;'
+    };
 
   function init(initRoute) {
     route = initRoute;
@@ -84,11 +92,19 @@ module AmiaGraph {
 
     setupSearch();
   }
+
+
+  function escape(str) {
+    return String(str).replace(/[&<>"'\/]/g, function (s) {
+      return entityMap[s];
+    });;
+  }
+
   function setupSearch() {
     var makeNodeResult = (node : Node) => {
       var ret = '<div class="result" data-type="node" data-id="'+node.id+'">';
       ret += '<span class="node_from">' + '<img src="'+ img(node) + '" />' + '</span>';
-      ret +=  node.name
+      ret +=  escape(node.name)
       ret += ' ' + makeNodeDate(node);
       ret += '</div>'
       return ret;
@@ -97,7 +113,7 @@ module AmiaGraph {
     var makeEdgeResult = (edge : Edge) => {
       var ret = '<div class="result" data-type="edge" data-id="'+edge.id+'">';
       ret +=  '<span class="node_from">' + '<img src="'+ img(edge.source) + '" />' + '</span> ⇾ ';
-      ret +=  edge.name;
+      ret +=  escape(edge.name);
       ret +=  ' ⇾ <span class="node_to">' + '<img src="'+ img(edge.target) + '" />' + '</span>';
       ret +=   '</div>';
       return ret;
