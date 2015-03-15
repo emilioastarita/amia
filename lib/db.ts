@@ -5,7 +5,21 @@ var gm = require('gm');
 var debug = require('debug')('amia');
 import auth = require('./auth');
 
+
 var connection : mysql.IConnection = null;
+
+var cache = {
+  getAllIndexed: null
+};
+
+function cleanGetAllIndexedCallback(ready) {
+  return (err, result) => {
+    if (!err) {
+      cache.getAllIndexed = null;
+    }
+    ready(err, result);
+  };
+}
 
 interface Node {
   id?: number;
@@ -101,6 +115,9 @@ export function getAll(ready: Function): void {
 };
 
 export function getAllIndexed(ready: FunDb<DbAmia>): void {
+  if (cache.getAllIndexed) {
+    return ready(null, cache.getAllIndexed);
+  }
   var newResult: any = { nodes: {}, edges: {}, sources: {nodes: [], edges: []} };
   function makeIndexer(index): Function {
     return (e, i) => {
@@ -117,9 +134,11 @@ export function getAllIndexed(ready: FunDb<DbAmia>): void {
     result.sources.forEach((source, idx) => {
       newResult.sources[source.entity+'s'][source.entity_id].push(source.link);
     });
+    if (!err) {
+      cache.getAllIndexed = newResult;
+    }
     ready(err, newResult);
   });
-
 }
 
 export function getNodes(ready: FunDb<Node[]>): void {
@@ -133,8 +152,6 @@ export function getEdges(ready: FunDb<Edge[]>): void {
 export function getSources(ready: FunDb<Source[]>): void {
   connection.query('select * FROM `source`;', ready);
 }
-
-
 
 export function getUserByEmail(mail: string, ready: FunDbOneResult<User>): void {
   connection.query('select * from `user` where `email` = ? ;', mail, useOneResultFunc(ready));
@@ -212,31 +229,30 @@ export function saveEdge(formData, ready: FunDbSave): void {
   var q = '';
   if (formData.id === 'new') {
     q = 'insert into `edge` SET ? ';
-    connection.query(q, edge, (err, result) => {
+    connection.query(q, edge, cleanGetAllIndexedCallback((err, result) => {
       if (!err) {
-        saveSourcesForEntity(formData.source, 'edge', result.insertId, (err, _) => {});
+        saveSourcesForEntity(formData.source, 'edge', result.insertId, cleanGetAllIndexedCallback((err, _) => {}));
       }
       ready(err, result);
-    });
+    }));
   } else {
     q = 'UPDATE `edge` SET ? WHERE id = ? limit 1';
     debug('UPDATE edge: ', edge);
-    connection.query(q, [edge, formData.id], (err, r) => {ready(err, {insertId: formData.id})});
-    saveSourcesForEntity(formData.source, 'edge', formData.id, (err, _) => {});
-
+    connection.query(q, [edge, formData.id], cleanGetAllIndexedCallback((err, r) => {ready(err, {insertId: formData.id})}));
+    saveSourcesForEntity(formData.source, 'edge', formData.id, cleanGetAllIndexedCallback((err, _) => {}));
   }
 }
 
 export function deleteEdge(id : number, ready: FunDbSave): void {
   debug('deleteEdge', id);
   var q = 'delete from `edge` WHERE id = ? limit 1';
-  connection.query(q, id, ready);
+  connection.query(q, id, cleanGetAllIndexedCallback(ready));
 }
 
 export function deleteNode(id : number, ready: FunDbSave): void {
   debug('deleteNode', id);
   var q = 'delete from `node` WHERE id = ? limit 1';
-  connection.query(q, id, ready);
+  connection.query(q, id, cleanGetAllIndexedCallback(ready));
 }
 
 // utility functio to create a new user without registration.
@@ -261,7 +277,6 @@ export function createUserIfNotExists(email : string, password : string, userTyp
 }
 
 export function saveNode(formData, photo, ready: FunDbSave): void {
-  debug('saveNode', formData);
   var node: Node = <Node>{};;
   node.name = formData.name || 'XXXX';
   node.type = formData.type || 'generico';
@@ -278,17 +293,17 @@ export function saveNode(formData, photo, ready: FunDbSave): void {
   var q = '';
   if (formData.id === 'new') {
     q = 'insert into `node` SET ? ';
-    connection.query(q, node, (err, result) => {
+    connection.query(q, node, cleanGetAllIndexedCallback((err, result) => {
       if (!err) {
         saveSourcesForEntity(formData.source, 'node', result.insertId, (err, _) => {});
       }
       ready(err, result);
-    });
+    }));
   } else {
     q = 'UPDATE `node` SET ? WHERE id = ? limit 1';
     debug('UPDATE node: ', node);
     connection.query(q, [node, formData.id], (err, r) => {ready(err, {insertId: formData.id})});
-    saveSourcesForEntity(formData.source, 'node', formData.id, (err, _) => {});
+    saveSourcesForEntity(formData.source, 'node', formData.id, cleanGetAllIndexedCallback((err, _) => {}));
   }
 
 }
