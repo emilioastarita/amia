@@ -102,7 +102,7 @@ module AmiaGraph {
 
   function setupSearch() {
     var makeNodeResult = (node : Node) => {
-      var ret = '<div class="result" data-type="node" data-id="'+node.id+'">';
+      var ret = '<div class="result js-link" data-type="node" data-id="'+node.id+'">';
       ret += '<span class="node_from">' + '<img src="'+ img(node) + '" />' + '</span>';
       ret +=  escape(node.name)
       ret += ' ' + makeNodeDate(node);
@@ -111,7 +111,7 @@ module AmiaGraph {
     };
 
     var makeEdgeResult = (edge : Edge) => {
-      var ret = '<div class="result" data-type="edge" data-id="'+edge.id+'">';
+      var ret = '<div class="result js-link" data-type="edge" data-id="'+edge.id+'">';
       ret +=  '<span class="node_from">' + '<img src="'+ img(edge.source) + '" />' + '</span> ⇾ ';
       ret +=  escape(edge.name);
       ret +=  ' ⇾ <span class="node_to">' + '<img src="'+ img(edge.target) + '" />' + '</span>';
@@ -138,12 +138,12 @@ module AmiaGraph {
       }
       return false;
     };
-    $('body').on('click', '.js-result-list .result', (e) => {
+    $('body').on('click', '.js-link', (e) => {
       var r = $(e.currentTarget)
       if (r.data('type') === 'node') {
-        showNodeInfo(r.data('id'))
+        showNodeInfo(parseInt(r.data('id'), 10))
       } else {
-        showEdgeInfo(r.data('id'))
+        showEdgeInfo(parseInt(r.data('id'), 10))
       }
     });
     $('body').on('input', '.js-search', (e) => {
@@ -203,7 +203,7 @@ module AmiaGraph {
     str += '</ul>';
     return str;
   }
-  function showNodeInfo(nodeId) {
+  function showNodeInfo(nodeId : number) {
     hidePopup();
     var node = nodes[nodeId];
     if (!node) { cleanHash(); return; }
@@ -216,6 +216,24 @@ module AmiaGraph {
     $nodeClone.find('.sources').html(makeSources(sources.nodes[nodeId]));
     $nodeClone.find('.image img').attr('src', img(node));
     $nodeClone.find('.description').html(node.description);
+
+    Object.keys(edges).forEach(i => {
+      var l : Edge = edges[i];
+      if (l.node_from === nodeId || l.node_to === nodeId) {
+          var $edgeClone = $nodeClone.find('.relations .relation:first').clone();
+          $edgeClone.find('.middle').data('id', l.id);
+          $edgeClone.find('.relTitle').html(l.name);
+          $edgeClone.find('.node_from').data('id', l.source.id);
+          $edgeClone.find('.node_from .name').html(l.source.name)
+          $edgeClone.find('.node_from img').attr('src', img(l.source));
+          $edgeClone.find('.node_to .name').html(l.target.name);
+          $edgeClone.find('.node_to img').attr('src', img(l.target));
+          $edgeClone.find('.node_to').data('id', l.target.id);
+          $nodeClone.find('.relations').append($edgeClone.show());
+      }
+    })
+
+
     openPopup($nodeClone);
     window.location.hash = '/node/' + nodeId;
   }
@@ -236,7 +254,7 @@ module AmiaGraph {
     }
   }
 
-  function showEdgeInfo(edgeId) {
+  function showEdgeInfo(edgeId : number) {
     hidePopup();
     var edge = edges[edgeId];
     if (!edge) { cleanHash(); return; }
@@ -245,10 +263,13 @@ module AmiaGraph {
     var $edgeClone = $edge.clone();
     $edgeClone.addClass('js-remove-after');
     $edgeClone.find('.title').html(edge.name);
+    $edgeClone.find('.middle').data('id', edge.id);
+    $edgeClone.find('.node_from').data('id', from.id);
     $edgeClone.find('.node_from .name').html(from.name)
     $edgeClone.find('.node_from img').attr('src', img(from));
     $edgeClone.find('.node_to .name').html(to.name);
     $edgeClone.find('.node_to img').attr('src', img(to));
+    $edgeClone.find('.node_to').data('id', to.id);
     $edgeClone.find('.description').html(edge.description);
     $edgeClone.find('.sources').html(makeSources(sources.edges[edgeId]));
     $edgeClone.appendTo('body');
@@ -262,9 +283,9 @@ module AmiaGraph {
   function doRoute() {
     var matched = null;
     if (matched = route.match("/node/([0-9]+)")) {
-      showNodeInfo(matched[1]);
+      showNodeInfo(parseInt(matched[1], 10));
     } else if(matched = route.match("/edge/([0-9]+)")) {
-      showEdgeInfo(matched[1]);
+      showEdgeInfo(parseInt(matched[1], 10));
     } else {
       cleanHash();
     }

@@ -69,20 +69,33 @@ block mainContent
       div.image
         img(src='')
       div.description
+      h5.edgesTitle Relaciones:
+      div.relations
+        div.relation.node-rel(style="display: none;")
+          span.node_from.js-link(data-type="node")
+            img
+            span.name
+          span.middle.js-link(data-type="edge")
+            span ⇾      
+            strong.relTitle
+            span ⇾
+          span.node_to.js-link(data-type="node")
+            img
+            span.name      
       h3.sourcesTitle Fuentes:
       div.sources
     #edgeInfoTpl.popupGraph.four.columns
       button.close.button Cerrar
       h1.title
       div.relation
-        span.node_from
+        span.node_from.js-link(data-type="node")
           img
           span.name
-        span.middle
+        span.middle.js-link(data-type="edge")
           span ⇾      
           strong.title
           span ⇾
-        span.node_to
+        span.node_to.js-link(data-type="node")
           img
           span.name
       div.description
