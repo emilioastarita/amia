@@ -86,7 +86,23 @@ interface FunDbConnect {
 export function initDb(callback? : FunDbConnect) {
   var dbOptions = config.get('database');
   connection = mysql.createConnection(dbOptions);
-  connection.connect(callback)
+  connection.connect((err, result) => {
+    if(err) {
+      console.log('error when connecting to db:', err);
+      return setTimeout(initDb, 2000);
+    }
+    if (callback)
+      callback(err, result);
+  });
+  connection.on('error', function(err) {
+    console.log('db error', err);
+    if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+      initDb((err,res) => {});
+    } else {
+      throw err;
+    }
+  });
+
 }
 export function destroy() {
   connection.destroy();
