@@ -92,6 +92,7 @@ module AmiaGraph {
         doRoute();
       }, 1500);
     });
+    $('body').on('click', '.js-zoom',uiZoom);
     $('body').on('click', '.popupGraph .close',hidePopup);
     $('#whatis').on('click', _ => {
       hidePopup();
@@ -100,7 +101,18 @@ module AmiaGraph {
 
     setupSearch();
   }
+  function uiZoom(e) {
+    console.log('test', e);
+    var $e = $(e.currentTarget);
+    var zoomIncrement = parseInt($e.data('zoom'), 10) / 30;
+    console.log('zoomIncrement', zoomIncrement)
+    var actualZoom = zoomBehavior.scale();
+    console.log('actualZoom', actualZoom);
 
+      zoomBehavior
+        .scale(actualZoom + zoomIncrement)
+        .event(d3.select('#graph'));
+  }
 
   function escape(str) {
     return String(str).replace(/[&<>"'\/]/g, function (s) {

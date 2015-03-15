@@ -334,7 +334,22 @@ table {
 }
 
 
-
+#toolbar {
+  @width-toolbar: 240px;
+  position: absolute;
+  z-index: 4;
+  width: @width-toolbar;
+  right: @width-toolbar / 2;
+  top: 10px;
+  button {
+    border: 1px solid #ccc;
+    &:hover {
+      border: 1px solid #fff;
+    }
+    color: #FFF;
+    margin-left: 5px;
+  }
+}
 #search {
   @width-search: 300px;
   position: absolute;
