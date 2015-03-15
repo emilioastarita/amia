@@ -245,8 +245,10 @@ module AmiaGraph {
     var $edgeClone = $edge.clone();
     $edgeClone.addClass('js-remove-after');
     $edgeClone.find('.title').html(edge.name);
-    $edgeClone.find('.node_from').html(from.name);
-    $edgeClone.find('.node_to').html(to.name);
+    $edgeClone.find('.node_from .name').html(from.name)
+    $edgeClone.find('.node_from img').attr('src', img(from));
+    $edgeClone.find('.node_to .name').html(to.name);
+    $edgeClone.find('.node_to img').attr('src', img(to));
     $edgeClone.find('.description').html(edge.description);
     $edgeClone.find('.sources').html(makeSources(sources.edges[edgeId]));
     $edgeClone.appendTo('body');
