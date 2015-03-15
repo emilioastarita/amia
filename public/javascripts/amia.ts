@@ -490,8 +490,31 @@ module AmiaGraph {
     node.attr("transform", (d) => {
       return "translate(" + (d.x - d.radius) + "," + (d.y - d.radius) + ")";
     });
-    edge.select('text').attr("transform", d => {
-      return "translate(" + ((d.source.x + d.target.x) / 2) + "," + (d.source.y + d.target.y) / 2 + ")";
+    /*var paddingX = this.getComputedTextLength() / 2;
+    var paddingY = 7;    */
+    edge.select('text').attr("transform", function(d) {
+      var x = d.source.x - d.target.x ;
+      var y = d.source.y - d.target.y;
+      var angleRadians = Math.atan2(y, x);
+      var angle = angleRadians * 180 / Math.PI;
+
+      if (angle > 90 && angle < 180) {
+        angle -= 180;
+        angleRadians -= Math.PI;
+      } else if (angle > -180 && angle < -90) {
+        angle += 180;
+        angleRadians += Math.PI;
+      }
+
+      var padding  = this.getComputedTextLength() / 2;
+      var paddingX = (padding + 5) * Math.cos(angleRadians);
+      var paddingY = (padding + 5) * Math.sin(angleRadians);
+
+
+      var translateX = ((d.source.x + d.target.x) / 2) - paddingX;
+      var translateY = ((d.source.y + d.target.y) / 2) - paddingY;
+
+      return "translate(" + translateX  + "," + translateY + ")" + 'rotate('+angle+')';
     });
     edge.select('line')
     .attr("x1", d => {
@@ -502,7 +525,8 @@ module AmiaGraph {
         return d.target.x;
       }).attr("y2", d => {
         return d.target.y;
-      });
+    });
+
   }
 
   function createClipRadius(vis : D3.Selection) {
