@@ -3,7 +3,17 @@ declare var wysihtml5 : any;
 declare var wysihtml5ParserRules : any;
 
 $(function(){
-
+    var removeAccents = function(str){
+          return str
+             .replace(/[áàãâä]/gi,"a")
+             .replace(/[éè¨ê]/gi,"e")
+             .replace(/[íìïî]/gi,"i")
+             .replace(/[óòöôõ]/gi,"o")
+             .replace(/[úùüû]/gi, "u")
+             .replace(/[ç]/gi, "c")
+             .replace(/[ñ]/gi, "n")
+             .replace(/[^a-zA-Z0-9]/g," ");
+    };
     var editorElem = document.querySelector('.wyshtml5');
     if (editorElem) {
         wysihtml5.commands.clearFormat = {
@@ -95,7 +105,8 @@ $(function(){
             $e.data('original', $e.html());
           }
           var escapedTerm = term.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-          var html = $e.data('original').replace(new RegExp("("+escapedTerm+")", "ig"), "<span class='highlight'>$1</span>")
+          var text = $('<div />').html($e.data('original')).text();
+          var html = text.replace(new RegExp("("+escapedTerm+")", "ig"), "<span class='highlight'>$1</span>")
           $e.html(html);
         });
       }
@@ -106,11 +117,11 @@ $(function(){
         var table = $tables[type][0];
         var term = $.trim($e.val());
         $tables[type].find('span.highlight').removeClass('highlight');
-      	var terms = term.toLowerCase().split(" ");
+      	var terms = removeAccents(term).toLowerCase().split(" ");
       	for (var r = 1; r < table.rows.length; r++) {
       		var display = '';
       		for (var i = 0; i < terms.length; i++) {
-      			if (table.rows[r].getAttribute('data-search').replace(/<[^>]+>/g, "").toLowerCase()
+      			if (removeAccents(table.rows[r].getAttribute('data-search').replace(/<[^>]+>/g, "")).toLowerCase()
       				.indexOf(terms[i]) < 0) {
       				display = 'none';
       			} else {
