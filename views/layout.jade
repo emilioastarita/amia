@@ -1,6 +1,13 @@
 doctype html
 html
-  head
+  head(prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#")
+  
+    meta(property="fb:app_id", content="512168595587298" ) 
+    meta(property="og:type", content="website") 
+    meta(property="og:url",    content="http://amia.elloropolitico.com") 
+    meta(property="og:title",  content="Gráfico interactivo sobre el caso AMIA/Nisman") 
+    meta(property="og:image",  content="http://amia.elloropolitico.com/images/fb-preview.jpg") 
+  
     title Mapa AMIA y Caso Nisman
     link( href="/favicon.ico?", rel="icon", type="image/x-icon")
     link(href='//fonts.googleapis.com/css?family=Raleway:400,300,600', rel='stylesheet', type='text/css')
@@ -19,7 +26,7 @@ html
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;
       js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/es_LA/sdk.js#xfbml=1&appId=355003657867221&version=v2.0";
+      js.src = "//connect.facebook.net/es_LA/sdk.js#xfbml=1&appId=512168595587298&version=v2.0";
       fjs.parentNode.insertBefore(js, fjs);
       }(document, 'script', 'facebook-jssdk'));
       !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
