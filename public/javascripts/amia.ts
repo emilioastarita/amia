@@ -107,8 +107,6 @@ module AmiaGraph {
     var zoomIncrement = parseInt($e.data('zoom'), 10) / 30;
     console.log('zoomIncrement', zoomIncrement)
     var actualZoom = zoomBehavior.scale();
-    console.log('actualZoom', actualZoom);
-
       zoomBehavior
         .scale(actualZoom + zoomIncrement)
         .event(d3.select('#graph'));
